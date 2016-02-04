@@ -1,17 +1,19 @@
 
 function createPlayer() {
     // The player and its settings
+
     player = game.add.sprite(100, game.world.height - 450, 'player');
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
+
 
     //  Player physics properties. Give the little guy a slight bounce.
     player.body.bounce.y = 0.05;
     player.body.gravity.y = 800;
     player.body.collideWorldBounds = false;
 
-    /*
+ /*
         player.anchor.setTo(0.5, 0.5);
         game.camera.follow(player);
     */
@@ -30,14 +32,19 @@ function isDeadPlayer() {
 
 function respawnPlayer() {
     player.y = 0;
+    console.log('speed : ' + speed + ' tresholdGap : ' + tresholdGap + ' spacing : ' + (speed * score)); 
     if (score > best)
     {
         best = score - 1;
         bestScoreText.text = 'Best Score : ' + score;
+        
     }
+    
     score = 0;
-    speed = 4;
+    speed = 5;
     treshold = 10;
+    tresholdGap = 5;
+    
 }
 
 function playerControl() {
@@ -68,16 +75,17 @@ function playerControl() {
            player.body.velocity.y = -500;
        }
       */
-    if (cursors.up.isDown && player.body.touching.down) {
+      
+    if ((SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) && player.body.touching.down) {
         player.body.velocity.y = -250;
         player.force = 300;
         player.jumping = true;
     }
-    else if (cursors.up.isDown && player.force > 0 && player.jumping) {
+    else if ((SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) && player.force > 0 && player.jumping) {
         player.body.velocity.y -= 25;
         player.force -= 25;
     }
-    else if (!cursors.up.isDown || player.force <= 0) {
+    else if (!(SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) || player.force <= 0) {
         player.jumping = false;
     }
 }

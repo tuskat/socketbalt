@@ -2,11 +2,11 @@
   "name": "socketBalt",
   "version": "0.0.1",
   "description": "A simple endless runner with a twist",
-  "main": "index.js",
+  "main": "elec-app.js",
   "author": "Cedric Marcellin",
   "private": true,
   "license": "BSD",
   "dependencies": {
-    "express": "3.4.8"
+    "express": "^4.10.2"
   }
 }
