@@ -12,11 +12,11 @@ function createPlayer() {
     player.body.bounce.y = 0.05;
     player.body.gravity.y = 800;
     player.body.collideWorldBounds = false;
-
- /*
-        player.anchor.setTo(0.5, 0.5);
-        game.camera.follow(player);
-    */
+    
+    /*
+           player.anchor.setTo(0.5, 0.5);
+           game.camera.follow(player);
+       */
 
     //  Our two animations, walking left and right.
     player.animations.add('left', [0, 1, 2, 3], 10, true);
@@ -32,25 +32,24 @@ function isDeadPlayer() {
 
 function respawnPlayer() {
     player.y = 0;
-    console.log('speed : ' + speed + ' tresholdGap : ' + tresholdGap + ' spacing : ' + (speed * score)); 
-    if (score > best)
-    {
-        best = score - 1;
-        bestScoreText.text = 'Best Score : ' + score;
-        
+    console.log('speed : ' + rules.speed + ' tresholdGap : ' + rules.tresholdGap + ' spacing : ' + (rules.speed * rules.score));
+    if (rules.score > rules.best) {
+        rules.best = rules.score - 1;
+        rules.bestScoreText.text = 'Best Score : ' + rules.score;
+
     }
-    
-    score = 0;
-    speed = 5;
-    treshold = 10;
-    tresholdGap = 5;
-    
+
+    rules.score = 0;
+    rules.speed = 5;
+    rules.treshold = 10;
+    rules.tresholdGap = 5;
+
 }
 
 function playerControl() {
     var cursors = game.input.keyboard.createCursorKeys();
 
-    if (debug == 1) {
+    if (rules.debug == 1) {
         if (cursors.left.isDown) {
             //  Move to the left
             player.body.velocity.x = -300;
@@ -75,17 +74,20 @@ function playerControl() {
            player.body.velocity.y = -500;
        }
       */
-      
-    if ((SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) && player.body.touching.down) {
+
+    if ((rules.SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) && player.body.touching.down) {
         player.body.velocity.y = -250;
         player.force = 300;
         player.jumping = true;
+
+        console.log("height on floor :" + player.y);
     }
-    else if ((SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) && player.force > 0 && player.jumping) {
+    else if ((rules.SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) && player.force > 0 && player.jumping) {
         player.body.velocity.y -= 25;
         player.force -= 25;
+      
     }
-    else if (!(SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) || player.force <= 0) {
+    else if (!(rules.SpaceKey.isDown || game.input.pointer1.isDown || game.input.mousePointer.isDown) || player.force <= 0) {
         player.jumping = false;
     }
 }

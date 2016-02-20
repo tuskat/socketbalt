@@ -21,26 +21,23 @@ PIXI.blendModes = {
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
 
-// shall be cleanse on later version ---
-
 var platforms;
 var player;
-
-var score = 0;
-var best = 0;
-
-var treshold = 10;
-var tresholdGap = 5;
-var speed = 5;
-var maxspeed = 15;
-var maxpacing = 1800;
-
-var scoreText;
-var bestScoreText;
-var debug = 0;
-var swag = 100;
-
-var SpaceKey;
+// shall be cleanse on later version ---
+var rules = {
+ score : 0,
+ best : 0,
+ treshold : 10,
+ tresholdGap : 5,
+ speed : 5,
+ maxspeed : 10,
+ maxpacing : 120,
+ scoreText : null,
+ bestScoreText : null,
+ debug : 0,
+ swag : 100,
+ SpaceKey : null
+};
 // End of the horror ----
 
 function preload() {
@@ -78,7 +75,7 @@ function create() {
     var city = game.add.sprite(0, 300, 'city');
 
     game.add.tween(city).to({ x: -500 }, 50 * 1000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
-   
+
     game.add.sprite(0, 400, 'wall');
    
 
@@ -91,24 +88,25 @@ function create() {
     //  Now let's create two ledges
     var ledge = platforms.create(200, 450, 'ground');
     ledge.body.immovable = true;
-    ledge = platforms.create(600, 550, 'ground');
+    var ledge = platforms.create(550, 450, 'ground');
     ledge.body.immovable = true;
 
+
     //  game.input.onTap.add(playerTap, this);
-    SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    rules.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     game.input.mouse.capture = true;
 
     createPlayer();
 
 
-    scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
-    bestScoreText = game.add.text((game.width / 1.43), 16, 'Best Score: 0', { fontSize: '32px', fill: '#FFF' });
+    rules.scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
+    rules.bestScoreText = game.add.text((game.width / 1.43), 16, 'Best Score: 0', { fontSize: '32px', fill: '#FFF' });
     //  onResize();
 }
 
 function update() {
 
-    scoreText.text = 'Score : ' + score;
+    rules.scoreText.text = 'Score : ' + rules.score;
     game.physics.arcade.collide(player, platforms);
     player.body.velocity.x = 0;
     playerControl();
@@ -117,27 +115,36 @@ function update() {
 }
 
 function createLedge() {
-    var spacing = game.width + (speed * score);
-    if (spacing > maxpacing)
-        spacing = maxpacing;
+    var ledge;
+    var nextHeight;
+    var nextWidth;
+    var spacing = (rules.speed + rules.score);
+    if (spacing > rules.maxpacing)
+        spacing = rules.maxpacing;
 
-    if (score < swag)
-        var ledge = platforms.create(spacing, randomIntFromInterval(450, 550), 'ground');
-    if (score >= swag)
-        var ledge = platforms.create(spacing, randomIntFromInterval(400, 550), 'plat-sm');
+        nextWidth = randomIntFromInterval(game.width + 32, game.width + 64 + spacing);
+nextHeight = randomIntFromInterval(420, 540);
 
+console.log(nextHeight);// x125 y150 z180
+    if (rules.score < rules.swag)
+        ledge = platforms.create(nextWidth, nextHeight , 'ground');
+    if (rules.score >= rules.swag)
+    {
+        nextWidth = randomIntFromInterval(game.width + 64, game.width + 96 + spacing);
+        ledge = platforms.create(nextWidth, nextHeight, 'plat-sm');
+}
     ledge.body.immovable = true;
 }
 
 function cleanLedge(item) {
     //  Remove the item from the Group.
     platforms.remove(item);
-    score += 1;
-    if (score == treshold) {
-        if (speed != maxspeed)
-            speed += 1;
-        treshold += tresholdGap;
-        tresholdGap += 5;
+    rules.score += 1;
+    if (rules.score == rules.treshold) {
+        if (rules.speed != rules.maxspeed)
+            rules.speed += 1;
+        rules.treshold += rules.tresholdGap;
+        rules.tresholdGap += 5;
     }
 }
 function checkLedge() {
@@ -162,7 +169,7 @@ function checkLedge() {
 }
 
 function moveLedge(item) {
-    item.x -= speed * (1 + game.time.physicsElapsed);
+    item.x -= rules.speed * (1 + game.time.physicsElapsed);
 }
 
 function randomIntFromInterval(min, max) {
